@@ -1,6 +1,5 @@
 package com.example.hotelreservationsystem.availability;
 
-import com.example.hotelreservationsystem.reservation.ReservationDTO;
 import com.example.hotelreservationsystem.reservation.ReservationEntity;
 import com.example.hotelreservationsystem.reservation.ReservationRepository;
 import com.example.hotelreservationsystem.rooms.RoomsRepository;
@@ -40,14 +39,14 @@ public class AvailabilityServiceTest {
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.plusDays(1);
         List<ReservationEntity> reservationEntities = new ArrayList<>();
-        ReservationDTO reservationDTO = new ReservationDTO();
-        reservationDTO.setStartDate(startDate);
-        reservationDTO.setEndDate(endDate);
+        AvailabilityDTO availabilityDTO = new AvailabilityDTO();
+        availabilityDTO.setStartDate(startDate);
+        availabilityDTO.setEndDate(endDate);
 
         when(mockReservationRepository.findAllByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate, endDate)).thenReturn(reservationEntities);
         when(mockRoomsRepository.count()).thenReturn(2L);
 
-        StatusDTO status = availabilityService.checkAvailability(reservationDTO);
+        StatusDTO status = availabilityService.checkAvailability(availabilityDTO);
 
         Assert.assertEquals(Status.APPROVED, status.getStatus());
     }
@@ -57,12 +56,13 @@ public class AvailabilityServiceTest {
 
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.plusDays(1);
-        ReservationDTO reservationDTO = new ReservationDTO();
-        reservationDTO.setStartDate(startDate);
-        reservationDTO.setEndDate(endDate);
+        AvailabilityDTO availabilityDTO = new AvailabilityDTO();
+
+        availabilityDTO.setStartDate(startDate);
+        availabilityDTO.setEndDate(endDate);
         when(mockReservationRepository.countByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate, endDate)).thenReturn(5);
 
-        StatusDTO status = availabilityService.checkAvailability(reservationDTO);
+        StatusDTO status = availabilityService.checkAvailability(availabilityDTO);
 
         Assert.assertEquals(Status.REJECTED, status.getStatus());
     }

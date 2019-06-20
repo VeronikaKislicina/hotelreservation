@@ -1,9 +1,13 @@
 package com.example.hotelreservationsystem.rooms;
 
-public class RoomsDTO {
-    private Boolean available;
-    private Integer roomNumber;
+import javax.validation.constraints.NotNull;
 
+public class RoomsDTO {
+    @NotNull
+    private Boolean available;
+
+    @NotNull
+    private Integer roomNumber;
 
     public Boolean getAvailable() {
         return available;

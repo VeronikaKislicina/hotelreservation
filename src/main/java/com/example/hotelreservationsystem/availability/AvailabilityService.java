@@ -1,6 +1,5 @@
 package com.example.hotelreservationsystem.availability;
 
-import com.example.hotelreservationsystem.reservation.ReservationDTO;
 import com.example.hotelreservationsystem.reservation.ReservationRepository;
 import com.example.hotelreservationsystem.rooms.RoomsRepository;
 import com.example.hotelreservationsystem.status.Status;
@@ -23,10 +22,11 @@ public class AvailabilityService {
     }
 
     @Transactional
-    public StatusDTO checkAvailability(ReservationDTO reservationDTO) {
+
+    public StatusDTO checkAvailability(AvailabilityDTO availabilityDTO) {
         Integer occupiedRoomsNumber =
-                reservationRepository.countByStartDateGreaterThanEqualAndEndDateLessThanEqual(reservationDTO.getStartDate(),
-                        reservationDTO.getEndDate());
+                reservationRepository.countByStartDateGreaterThanEqualAndEndDateLessThanEqual(availabilityDTO.getStartDate(),
+                        availabilityDTO.getEndDate());
         long roomAmountNumber = roomsRepository.count();
         if (occupiedRoomsNumber >= roomAmountNumber) {
             StatusDTO statusDTO = new StatusDTO();
@@ -40,4 +40,5 @@ public class AvailabilityService {
             return statusDTO;
         }
     }
+
 }

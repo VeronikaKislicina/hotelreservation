@@ -17,10 +17,10 @@ import java.time.format.DateTimeFormatter;
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 
 @SpringBootApplication
-public class HotelreservationsystemApplication {
+public class HotelReservationSystemApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HotelreservationsystemApplication.class, args);
+		SpringApplication.run(HotelReservationSystemApplication.class, args);
 	}
 
 	@Bean

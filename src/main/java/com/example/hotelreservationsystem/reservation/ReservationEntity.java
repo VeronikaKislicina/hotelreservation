@@ -14,7 +14,7 @@ public class ReservationEntity {
     private Long id;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private RoomsEntity roomsEntity;
 
     private LocalDateTime startDate;

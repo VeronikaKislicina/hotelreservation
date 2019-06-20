@@ -1,30 +1,15 @@
-package com.example.hotelreservationsystem.reservation;
+package com.example.hotelreservationsystem.availability;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-public class ReservationDTO {
-
-    private Long id;
+public class AvailabilityDTO {
 
     @NotNull
     private LocalDateTime startDate;
 
     @NotNull
     private LocalDateTime endDate;
-
-    @NotNull
-    @NotEmpty
-    private String clientName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public LocalDateTime getStartDate() {
         return startDate;
@@ -40,13 +25,5 @@ public class ReservationDTO {
 
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
-    }
-
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
     }
 }

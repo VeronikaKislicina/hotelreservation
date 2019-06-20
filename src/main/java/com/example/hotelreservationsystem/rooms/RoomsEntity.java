@@ -16,7 +16,7 @@ public class RoomsEntity {
     private Integer roomNumber;
 
     @JsonIgnore
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<ReservationEntity> reservations;
 
     public Long getId() {

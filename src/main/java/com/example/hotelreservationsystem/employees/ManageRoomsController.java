@@ -1,12 +1,14 @@
 package com.example.hotelreservationsystem.employees;
 
+import com.example.hotelreservationsystem.availability.AvailabilityDTO;
 import com.example.hotelreservationsystem.availability.AvailabilityService;
-import com.example.hotelreservationsystem.reservation.ReservationDTO;
 import com.example.hotelreservationsystem.rooms.RoomsDTO;
 import com.example.hotelreservationsystem.rooms.RoomsEntity;
 import com.example.hotelreservationsystem.status.StatusDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/admins")
@@ -27,7 +29,7 @@ public class ManageRoomsController {
     }
 
     @PostMapping("/rooms")
-    public StatusDTO addRoom(@RequestBody RoomsDTO roomsDTO) {
+    public StatusDTO addRoom(@Valid @RequestBody RoomsDTO roomsDTO) {
         return manageRoomsService.addRoom(roomsDTO);
     }
 
@@ -37,7 +39,7 @@ public class ManageRoomsController {
     }
 
     @PutMapping("/rooms/{id}")
-    public StatusDTO update(@PathVariable Long id, @RequestBody RoomsDTO roomsDTO) {
+    public StatusDTO update(@Valid @PathVariable Long id, @RequestBody RoomsDTO roomsDTO) {
         return manageRoomsService.updateRoom(id, roomsDTO);
     }
 
@@ -47,7 +49,7 @@ public class ManageRoomsController {
     }
 
     @PostMapping("/availability")
-    public StatusDTO addRoom(@RequestBody ReservationDTO reservationDTO) {
-        return availabilityService.checkAvailability(reservationDTO);
+    public StatusDTO addRoom(@Valid @RequestBody AvailabilityDTO availabilityDTO) {
+        return availabilityService.checkAvailability(availabilityDTO);
     }
 }

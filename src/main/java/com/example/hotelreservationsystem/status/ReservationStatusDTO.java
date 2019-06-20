@@ -2,7 +2,7 @@ package com.example.hotelreservationsystem.status;
 
 import com.example.hotelreservationsystem.reservation.ReservationDTO;
 
-public class StatusDTO {
+public class ReservationStatusDTO {
     private Status status;
     private String details;
     private ReservationDTO reservationDTO;

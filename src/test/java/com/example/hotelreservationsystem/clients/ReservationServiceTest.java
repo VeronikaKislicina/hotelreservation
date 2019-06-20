@@ -5,8 +5,8 @@ import com.example.hotelreservationsystem.reservation.ReservationEntity;
 import com.example.hotelreservationsystem.reservation.ReservationRepository;
 import com.example.hotelreservationsystem.rooms.RoomsEntity;
 import com.example.hotelreservationsystem.rooms.RoomsRepository;
+import com.example.hotelreservationsystem.status.ReservationStatusDTO;
 import com.example.hotelreservationsystem.status.Status;
-import com.example.hotelreservationsystem.status.StatusDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -52,7 +53,11 @@ public class ReservationServiceTest {
         when(roomsRepository.findByRoomNumber(0)).thenReturn(room);
         when(roomsRepository.count()).thenReturn(2L);
 
-        StatusDTO status = reservationService.bookRoom(reservationDTO);
+        ReservationEntity savedReservationEntity = new ReservationEntity();
+        savedReservationEntity.setId(777L);
+        when(mockReservationRepository.save(any())).thenReturn(savedReservationEntity);
+
+        ReservationStatusDTO status = reservationService.bookRoom(reservationDTO);
 
         Assert.assertEquals(Status.APPROVED, status.getStatus());
     }
@@ -78,7 +83,7 @@ public class ReservationServiceTest {
         when(mockReservationRepository.findAllByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate, endDate)).thenReturn(reservationEntities);
 
 
-        StatusDTO status = reservationService.bookRoom(reservationDTO);
+        ReservationStatusDTO status = reservationService.bookRoom(reservationDTO);
 
         Assert.assertEquals(Status.REJECTED, status.getStatus());
     }

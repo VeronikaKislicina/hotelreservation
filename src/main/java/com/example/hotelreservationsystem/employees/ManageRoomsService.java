@@ -13,26 +13,27 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ManageRoomsService {
     private RoomsRepository roomsRepository;
     private RoomsMapper roomsMapper;
-    private StatusDTO statusDTO;
     private ReservationRepository reservationRepository;
 
     @Autowired
     public ManageRoomsService(RoomsRepository roomsRepository, RoomsMapper roomsMapper,
-                              StatusDTO statusDTO, ReservationRepository reservationRepository) {
+                              ReservationRepository reservationRepository) {
         this.roomsRepository = roomsRepository;
         this.roomsMapper = roomsMapper;
-        this.statusDTO = statusDTO;
         this.reservationRepository = reservationRepository;
     }
 
     public Iterable<RoomsEntity> getAllRooms() {
         return roomsRepository.findAll();
     }
+
+    StatusDTO statusDTO = new StatusDTO();
 
     @Transactional
     public StatusDTO addRoom(RoomsDTO roomsDTO) {
@@ -55,9 +56,15 @@ public class ManageRoomsService {
 
     @Transactional
     public StatusDTO updateRoom(Long id, RoomsDTO roomsDTO) {
-        roomsRepository.deleteById(id);
-        RoomsEntity newRoom = roomsMapper.addRoomsDTOtoEntity(roomsDTO);
-        roomsRepository.save(newRoom);
+
+        Optional<RoomsEntity> roomsEntity = roomsRepository.findById(id);
+        if (roomsEntity.isPresent()) {
+            RoomsEntity room = roomsEntity.get();
+
+            room.setAvailable(roomsDTO.getAvailable());
+            room.setRoomNumber(roomsDTO.getRoomNumber());
+            roomsRepository.save(room);
+        }
 
         statusDTO.setStatus(Status.APPROVED);
         statusDTO.setDetails("Room has been updated");
@@ -80,5 +87,4 @@ public class ManageRoomsService {
         }
         return response;
     }
-
 }

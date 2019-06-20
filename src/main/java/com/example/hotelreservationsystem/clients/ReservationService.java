@@ -5,8 +5,8 @@ import com.example.hotelreservationsystem.reservation.ReservationEntity;
 import com.example.hotelreservationsystem.reservation.ReservationRepository;
 import com.example.hotelreservationsystem.rooms.RoomsEntity;
 import com.example.hotelreservationsystem.rooms.RoomsRepository;
+import com.example.hotelreservationsystem.status.ReservationStatusDTO;
 import com.example.hotelreservationsystem.status.Status;
-import com.example.hotelreservationsystem.status.StatusDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,27 +27,27 @@ public class ReservationService {
     }
 
     @Transactional
-    public StatusDTO bookRoom(ReservationDTO reservationDTO) {
+    public ReservationStatusDTO bookRoom(ReservationDTO reservationDTO) {
 
         List<ReservationEntity> reservations =
                 reservationRepository.findAllByStartDateGreaterThanEqualAndEndDateLessThanEqual
                         (reservationDTO.getStartDate(), reservationDTO.getEndDate());
 
         if (reservations.size() >= roomsRepository.count()) {
-            StatusDTO statusDTO = new StatusDTO();
-            statusDTO.setStatus(Status.REJECTED);
-            statusDTO.setDetails("All rooms are booked for this period.");
-            return statusDTO;
+            ReservationStatusDTO reservationStatusDTO = new ReservationStatusDTO();
+            reservationStatusDTO.setStatus(Status.REJECTED);
+            reservationStatusDTO.setDetails("All rooms are booked for this period.");
+            return reservationStatusDTO;
         }
         List<Integer> occupiedRoomNumbers = new ArrayList<>();
 
-        StatusDTO statusDTO = makeReservation(reservationDTO, reservations, occupiedRoomNumbers);
+        ReservationStatusDTO reservationStatusDTO = makeReservation(reservationDTO, reservations, occupiedRoomNumbers);
 
-        return statusDTO;
+        return reservationStatusDTO;
     }
 
-    private StatusDTO makeReservation(ReservationDTO reservationDTO, List<ReservationEntity> reservations,
-                                      List<Integer> occupiedRoomNumbers) {
+    private ReservationStatusDTO makeReservation(ReservationDTO reservationDTO, List<ReservationEntity> reservations,
+                                                 List<Integer> occupiedRoomNumbers) {
 
         for (ReservationEntity reservation : reservations) {
             occupiedRoomNumbers.add(reservation.getRoomsEntity().getRoomNumber());
@@ -55,7 +55,7 @@ public class ReservationService {
 
         Integer roomNumber = occupiedRoomNumbers.size();
 
-        StatusDTO statusDTO = new StatusDTO();
+        ReservationStatusDTO reservationStatusDTO = new ReservationStatusDTO();
 
         if (reservations.size() < roomsRepository.count()) {
             ReservationEntity reservationEntity = new ReservationEntity();
@@ -67,7 +67,11 @@ public class ReservationService {
             reservationEntity.setEndDate(reservationDTO.getEndDate());
             reservationEntity.setClientName(reservationDTO.getClientName());
 
-            reservationRepository.save(reservationEntity);
+            reservationStatusDTO.setReservationDTO(reservationDTO);
+
+            ReservationEntity savedReservationEntity = reservationRepository.save(reservationEntity);
+
+            reservationDTO.setId(savedReservationEntity.getId());
 
             if (room.getReservations() == null) {
                 room.setReservations(new ArrayList<>());
@@ -75,14 +79,14 @@ public class ReservationService {
             room.getReservations().add(reservationEntity);
             roomsRepository.save(room);
 
-            statusDTO.setStatus(Status.APPROVED);
-            statusDTO.setDetails("Booked success at: " + reservationEntity.getStartDate()
+            reservationStatusDTO.setStatus(Status.APPROVED);
+            reservationStatusDTO.setDetails("Booked success at: " + reservationEntity.getStartDate()
                     + " until: " + reservationEntity.getEndDate());
         } else {
-            statusDTO.setStatus(Status.REJECTED);
-            statusDTO.setDetails("All rooms are booked.");
+            reservationStatusDTO.setStatus(Status.REJECTED);
+            reservationStatusDTO.setDetails("All rooms are booked.");
         }
-        return statusDTO;
+        return reservationStatusDTO;
     }
 
 }
